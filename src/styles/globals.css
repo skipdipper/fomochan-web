@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  /* background-color: #3A3B3C;
+  color: white; */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* Custom */
+
+nav {
+  display: flex;
+  padding: 10px 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+nav a {
+  margin-right: 0.5em;
+}
+
+/* Dropzone */
+
+.container p {
+    color: red;
+    text-align: center;
+}
+
+.drop-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    width: 800px;
+    height: 200px;
+    border: 4px dashed #4aa1f3;
+}
+
+.upload-icon {
+    width: 50px;
+    height: 50px;
+    background-size: 100%;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+.drop-message {
+    text-align: center;
+    color: #4aa1f3;
+    font-family: Arial;
+    font-size: 20px;
+}
+
+/* post */
+.post-id a:hover {
+  color: red;
+}
+
+.quotelink {
+  color: red;
+  text-decoration: underline;
+}
+
+.backlink .quotelink:hover {
+  color:red;
+}
+
+/* forms */
+
+form {
+  margin: 1rem;
+  padding: 1rem;
+  max-width: 50%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-row-gap: 0.3rem;
+  grid-column-gap: 1rem;
+  /* flex-basis: 50%; */
+}
+
+/* Search form */
+.search-suggestion-container {
+  margin: 1rem;
+  max-width: 50%;
+}
+
+.search-suggestion {
+  cursor: pointer;
+}
+
+.search-suggestion:hover {
+  background-color: lightgray;
+}
