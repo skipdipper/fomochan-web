@@ -32,6 +32,37 @@ nav a {
   margin-right: 0.5em;
 }
 
+#toggle-post-form-btn {
+  text-align: center;
+}
+
+#toggle-post-form-btn button{
+  font-size: 1.5rem;
+}
+
+/* Catalog */
+.catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+  gap: 2rem;
+  margin: 1rem;
+}
+
+.post-card {
+  text-align: center;
+}
+
+.post-reply-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.post-subject {
+  font-weight: 700;
+}
+
+
+
 /* Dropzone */
 
 .container p {
@@ -81,7 +112,7 @@ nav a {
 
 /* forms */
 
-form {
+form:not(#search-form) {
   margin: 1rem;
   padding: 1rem;
   max-width: 50%;
@@ -90,6 +121,11 @@ form {
   grid-row-gap: 0.3rem;
   grid-column-gap: 1rem;
   /* flex-basis: 50%; */
+}
+
+/* Control bar */
+#control-bar {
+  display: flex;
 }
 
 /* Search form */

@@ -55,7 +55,7 @@ export default function SearchForm({ data, setData }) {
 
     return (
         <>
-            <form ref={form} onSubmit={handleSubmit} >
+            <form ref={form} onSubmit={handleSubmit} id="search-form">
                 <input
                     type="text"
                     name="search"

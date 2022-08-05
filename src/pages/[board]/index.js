@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { getAllBoards } from '../../api/services/board'
 import useSWR from 'swr'
 import { useState, useEffect } from 'react';
@@ -124,6 +126,11 @@ export default function Board({ boardData }) {
     // hack
     const [data, setData] = useState(null);
 
+    const [isHidden, setIsHidden] = useState(true);
+
+    const onClick = () => setIsHidden(!isHidden);
+
+
     if (typeof window !== 'undefined') {
         if (sessionStorage.scrollPosition) {
             console.log(`restoring previous scroll position: ${sessionStorage.scrollPosition} scrolling...`);
@@ -143,13 +150,27 @@ export default function Board({ boardData }) {
             {/* Header */}
             <h1>/{boardData}</h1>
 
-            <ThreadForm />
+            <div id="toggle-post-form-btn">
+                <button onClick={onClick}>Start a New Thread!!!</button>
+            </div>
+            {
+                !isHidden && <ThreadForm />
+            }
 
-            {/* <SearchForm /> */}
-            <SearchForm
-                data={data}
-                setData={setData}
-            />
+            {/* <ThreadForm /> */}
+
+            <div id="control-bar">
+                {/* <SearchForm /> */}
+                <SearchForm
+                    data={data}
+                    setData={setData}
+                />
+
+                <Link href={`/${boardData}/catalog`}>
+                    <a>[catalog]</a>
+                </Link>
+            </div>
+
 
 
             {/* <Threads /> */}
