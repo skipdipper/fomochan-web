@@ -19,9 +19,9 @@ function Post(props) {
     return (
         <div className={styles.post} id={`p${props.post_id}`}>
             <div className={styles.postInfo}>
-                <span>{props.subject}&nbsp;</span>
-                <span>{props.name ?? `Anonymous`}&nbsp;</span>
-                <span>{createdAt(props.created_at)}&nbsp;</span>
+                <span className="post-subject">{props.subject}&nbsp;</span>
+                <span className="post-author">{props.name ?? `Anonymous`}&nbsp;</span>
+                <span className="post-date">{createdAt(props.created_at)}&nbsp;</span>
 
 
                 <span className="post-id">
@@ -45,10 +45,7 @@ function Post(props) {
                     </Link>
                 </span>
 
-                {/* {props.replies && props.replies != 0 &&
-                    <BackLink replies={props.replies} />
-                } */}
-                {props.reply_to &&
+                {Boolean(props.reply_to) &&
                     <BackLink replies={props.reply_to} />
                 }
 

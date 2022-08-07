@@ -151,7 +151,7 @@ export default function Board({ boardData }) {
             <h1>/{boardData}</h1>
 
             <div id="toggle-post-form-btn">
-                <button onClick={onClick}>Start a New Thread!!!</button>
+                <button onClick={onClick}>Start a New Thread</button>
             </div>
             {
                 !isHidden && <ThreadForm />

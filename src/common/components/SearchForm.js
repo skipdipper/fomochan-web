@@ -54,7 +54,7 @@ export default function SearchForm({ data, setData }) {
 
 
     return (
-        <>
+        <div id="search-container">
             <form ref={form} onSubmit={handleSubmit} id="search-form">
                 <input
                     type="text"
@@ -68,18 +68,20 @@ export default function SearchForm({ data, setData }) {
             </form>
 
             {autoSuggestions &&
-                <div className="search-suggestion-container">
+                <ul className="search-suggestion-container">
                     {autoSuggestions.map((autoSuggestion, i) => {
-                        return <div className="search-suggestion" key={`s${i}`}
+                        return <li className="search-suggestion" key={`s${i}`}
                             onClick={() => handleOnSuggest(autoSuggestion)}
                         >
                             {autoSuggestion.subject}
-                        </div>
+                        </li>
                     })}
-                </div>
+                </ul>
             }
-        </>
+        </div>
 
     )
 
 }
+
+
