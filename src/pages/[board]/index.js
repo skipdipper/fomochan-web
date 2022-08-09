@@ -103,7 +103,7 @@ function Threads({ data, setData }) {
                 width={thread.width}
                 height={thread.height}
                 thread_id={thread.thread_id}
-                // replies={thread.replies}
+                replies={thread.replies}
                 images={thread.images}
                 tim={thread.tim}
                 op={true}

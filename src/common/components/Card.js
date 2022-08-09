@@ -8,7 +8,7 @@ export default function Card(props) {
 
     return (
         <div className="post-card">
-            
+
             <div className="post-image">
                 <Link href={`/${board}/thread/${props.post_id}`}>
                     <a>
@@ -23,7 +23,9 @@ export default function Card(props) {
             </div>
 
             <div className="post-details">
-                <div className="post-reply-count">Replies: {props.replies}</div>
+                <div className="post-meta" title="(R)eplies / (I)mage Replies">
+                    R: <span class="reply-count">{props.replies}</span> / I: <span class="image-count">{props.images}</span>
+                </div>
                 <div className="post-subject">{props.subject}</div>
                 <div className="post-preview">{props.comment}</div>
             </div>

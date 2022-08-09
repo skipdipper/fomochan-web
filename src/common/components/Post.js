@@ -33,7 +33,8 @@ function Post(props) {
                             console.log('clicked on repply to this post');
                             const { comment } = props.form.current;
                             console.log('current comment', comment.value);
-                            comment.value += `>>${props.post_id}`;
+                            comment.focus();
+                            comment.value += `>>${props.post_id}\r\n`;
 
                         }}
 
@@ -123,7 +124,8 @@ function Comment({ comment }) {
 
 
     function quotelink(match, offset, string) {
-        return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a><br>`;
+        // return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a><br>`;
+        return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a>`;
     }
 
     return (

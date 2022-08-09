@@ -53,7 +53,7 @@ function Posts({ form }) {
                 height={thread.height}
                 thread_id={thread.thread_id}
                 // replies={thread.replies}
-                reply_to={thread.replies}
+                reply_to={thread.thread_id == 0 ? thread.last_replies : thread.replies}
 
                 images={thread.images}
                 tim={thread.tim}

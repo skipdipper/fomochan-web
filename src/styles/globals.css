@@ -55,10 +55,17 @@ nav a {
   text-align: center;
 }
 
-.post-reply-count {
+.post-meta {
   font-size: 0.8rem;
+  cursor:help;
+  /* font-weight: 700; */
+}
+
+.reply-count, .image-count {
   font-weight: 700;
 }
+
+
 
 .post-subject {
   font-weight: 700;
@@ -118,6 +125,11 @@ nav a {
 
 .backlink .quotelink:hover {
   color:red;
+}
+
+.backlink .quotelink {
+  font-size: 0.8rem;
+  margin-left: .2rem;
 }
 
 /* forms */
