@@ -100,8 +100,11 @@ function Threads({ data, setData }) {
                 comment={thread.comment}
                 filesize={thread.filesize}
                 filename={thread.filename}
+                ext={thread.ext}
                 width={thread.width}
                 height={thread.height}
+                thumbnailWidth={thread.thumbnail_w}
+                thumbnailHeight={thread.thumbnail_h}
                 thread_id={thread.thread_id}
                 replies={thread.replies}
                 images={thread.images}

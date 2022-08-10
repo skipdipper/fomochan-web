@@ -49,8 +49,11 @@ function Posts({ form }) {
                 comment={thread.comment}
                 filesize={thread.filesize}
                 filename={thread.filename}
+                ext={thread.ext}
                 width={thread.width}
                 height={thread.height}
+                thumbnailWidth={thread.thumbnail_w}
+                thumbnailHeight={thread.thumbnail_h}
                 thread_id={thread.thread_id}
                 // replies={thread.replies}
                 reply_to={thread.thread_id == 0 ? thread.last_replies : thread.replies}

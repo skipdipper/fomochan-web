@@ -1,16 +1,16 @@
+import { useState } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { useRouter } from 'next/router';
-
 
 import styles from './Post.module.css'
 
-function Post(props) {
+export default function Post(props) {
 
     const router = useRouter();
     // const { board } = router.query;
     const board = 'a';
+    const threadId = props.thread_id || props.post_id;
 
     function handleReplyPost() {
         console.log(props.form.current.comment.value);
@@ -25,9 +25,10 @@ function Post(props) {
 
 
                 <span className="post-id">
-                    <Link href="#">
-                        <a>No. </a>
+                    <Link href={`#p${props.post_id}`} scroll={false}>
+                        <a title="Link to this post">No.</a>
                     </Link>
+
                     <a title="Reply to this post"
                         onClick={() => {
                             console.log('clicked on repply to this post');
@@ -55,28 +56,7 @@ function Post(props) {
 
 
             {props.filesize &&
-                <div className={styles.image}>
-                    <div className={styles.imageInfo}>
-                        <span>
-                            File:
-                            <Link href="#">
-                                <a> {props.filename} </a>
-                            </Link>
-                            ({props.width}x{props.height})
-                        </span>
-                    </div>
-
-                    <Link href="#">
-                        <a className={styles.thumbnail}>
-                            <Image
-                                src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
-                                width={125}
-                                height={95}
-                                alt={props.filename}
-                            />
-                        </a>
-                    </Link>
-                </div>
+                <Thumbnail {...props} />
             }
 
             <div className={styles.comment}>
@@ -92,7 +72,6 @@ function Post(props) {
                     </Link>
                 </div>
             }
-
         </div>
     )
 }
@@ -135,4 +114,45 @@ function Comment({ comment }) {
     );
 }
 
-export default Post;
+function Thumbnail(props) {
+    const [thumbnail, setThumbnail] = useState(true);
+
+    function handleImageClick(e) {
+        e.preventDefault();
+        setThumbnail(thumbnail => !thumbnail);
+    }
+
+    return (
+        <div className={styles.image}>
+            <div className={styles.imageInfo}>
+                <span>
+                    File:
+                    <Link href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}>
+                        <a target="_blank"> {props.filename} </a>
+                    </Link>
+                    ({props.width}x{props.height})
+                </span>
+            </div>
+
+            <Link href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}>
+                <a className={styles.thumbnail} onClick={handleImageClick}>
+                    {
+                        thumbnail
+                            ? <Image
+                                src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
+                                width={props.thumbnailWidth}
+                                height={props.thumbnailHeight}
+                                alt={props.filename}
+                            />
+                            : <Image
+                                src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}
+                                width={props.width}
+                                height={props.height}
+                                alt={props.filename}
+                            />
+                    }
+                </a>
+            </Link>
+        </div>
+    );
+}
