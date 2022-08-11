@@ -96,20 +96,56 @@ function BackLink({ replies }) {
     )
 }
 
-function Comment({ comment }) {
-    const regex = /[>]{2}[0-9]+/g;
-    // const data = comment.replace(regex, `<a href='#'>$&</p>`);
-    const data = comment.replace(regex, quotelink);
+// function Comment({ comment }) {
+//     const regex = /[>]{2}[0-9]+/g;
+//     // const data = comment.replace(regex, `<a href='#'>$&</p>`);
+//     const data = comment.replace(regex, quotelink);
 
 
-    function quotelink(match, offset, string) {
-        // return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a><br>`;
-        return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a>`;
-    }
+//     function quotelink(match, offset, string) {
+//         // return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a><br>`;
+//         return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a>`;
+//     }
+
+//     return (
+//         <>
+//             <blockquote className="post-comment" dangerouslySetInnerHTML={{ __html: data }} />
+//         </>
+//     );
+// }
+
+function Comment(props) {
+    //Ref: https://github.com/facebook/react/issues/3386#issuecomment-518163501
+
+    const [isMouseOver, setIsMouseOver] = useState(false);
+
+    const handleMouseOver = () => {
+        setIsMouseOver(true);
+        console.log('mouse over link');
+    };
+
+    const handleMouseOut = () => {
+        setIsMouseOver(false);
+        console.log('mouse out of link');
+
+    };
+
+    //Add brackets ( ) around regex to retain the separator
+    const regex = /([>]{2}[0-9]+)/g;
+    const parts = props.comment.split(regex);
 
     return (
         <>
-            <blockquote className="post-comment" dangerouslySetInnerHTML={{ __html: data }} />
+            <blockquote className="post-comment">
+                {
+                    parts.map(part => (part.match(regex)
+                        ? <a className="quotelink" href={`#p${part.slice(2)}`}
+                            onMouseOver={handleMouseOver}
+                            onMouseOut={handleMouseOut}
+                        >{part}</a>
+                        : part))
+                }
+            </blockquote>
         </>
     );
 }
