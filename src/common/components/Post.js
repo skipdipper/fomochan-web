@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 
+import { ThreadContext } from '../context/ThreadContext';
+
 import styles from './Post.module.css'
 
 export default function Post(props) {
-
     const router = useRouter();
     // const { board } = router.query;
     const board = 'a';
@@ -116,18 +117,20 @@ function BackLink({ replies }) {
 
 function Comment(props) {
     //Ref: https://github.com/facebook/react/issues/3386#issuecomment-518163501
-
+    const thread = useContext(ThreadContext);
+    const [mouseOverPostId, setMouseOverPostId] = useState(null);
     const [isMouseOver, setIsMouseOver] = useState(false);
 
-    const handleMouseOver = () => {
+    const handleMouseOver = (postId) => {
         setIsMouseOver(true);
-        console.log('mouse over link');
+        setMouseOverPostId(postId);
+        console.log('mouse over link No.', postId);
     };
 
     const handleMouseOut = () => {
         setIsMouseOver(false);
+        setMouseOverPostId(null);
         console.log('mouse out of link');
-
     };
 
     //Add brackets ( ) around regex to retain the separator
@@ -138,16 +141,33 @@ function Comment(props) {
         <>
             <blockquote className="post-comment">
                 {
-                    parts.map(part => (part.match(regex)
-                        ? <a className="quotelink" href={`#p${part.slice(2)}`}
-                            onMouseOver={handleMouseOver}
+                    parts.map((part, i) => (part.match(regex)
+                        ? <a key={i} className="quotelink" href={`#p${part.slice(2)}`}
+                            onMouseOver={() => handleMouseOver(part.slice(2))}
                             onMouseOut={handleMouseOut}
                         >{part}</a>
                         : part))
                 }
             </blockquote>
+
+            {
+                isMouseOver && Post(findPost(mouseOverPostId, thread))
+            }
         </>
     );
+}
+
+function findPost(postId, thread) {
+    for (let post of thread) {
+        if (post.post_id == postId) {
+            if (post?.thumbnail_h !== undefined) post.thumbnailHeight = post.thumbnail_h;
+            if (post?.thumbnail_w !== undefined) post.thumbnailWidth = post.thumbnail_w;
+
+            console.log(post);
+            return post;
+        }
+    }
+    return null;
 }
 
 function Thumbnail(props) {

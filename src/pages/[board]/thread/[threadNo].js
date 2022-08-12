@@ -8,11 +8,11 @@ import Dropzone from '../../../common/components/Dropzone';
 import BookmarkAddBtn from '../../../common/components/BookmarkAddBtn';
 import ThreadDeleteBtn from '../../../common/components/ThreadDeleteBtn';
 
-
+import { ThreadContext } from '../../../common/context/ThreadContext';
 
 function Posts({ form }) {
-    const [data, setData] = useState(null)
-    const [isLoading, setLoading] = useState(false)
+    const [data, setData] = useState(null);
+    const [isLoading, setLoading] = useState(false);
 
     const router = useRouter();
     const { threadNo } = router.query;
@@ -69,7 +69,9 @@ function Posts({ form }) {
 
     return (
         <div className='board'>
-            {threads}
+            <ThreadContext.Provider value={data}>
+                {threads}
+            </ThreadContext.Provider>
         </div>
     )
 
