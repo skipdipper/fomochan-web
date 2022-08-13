@@ -24,7 +24,7 @@ export default function Card(props) {
 
             <div className="post-details">
                 <div className="post-meta" title="(R)eplies / (I)mage Replies">
-                    R: <span class="reply-count">{props.replies}</span> / I: <span class="image-count">{props.images}</span>
+                    R: <span className="reply-count">{props.replies}</span> / I: <span className="image-count">{props.images}</span>
                 </div>
                 <div className="post-subject">{props.subject}</div>
                 <div className="post-preview">{props.comment}</div>

@@ -12,6 +12,7 @@ import ThreadForm from '../../common/components/ThreadForm';
 import SearchForm from '../../common/components/SearchForm';
 
 import useMaintainScroll from '../../common/hooks/useMaintainScroll';
+import useFetch from '../../common/hooks/useFetch';
 
 export async function getStaticPaths() {
     // Return a list of possible values for board title
@@ -54,42 +55,8 @@ export async function getStaticProps({ params }) {
     }
 }
 
-// hack pass parent state as prop
-function Threads({ data, setData }) {
-    // const [data, setData] = useState(null)
-    const [isLoading, setLoading] = useState(false)
 
-    // function handleSearch(data) {
-    //     setData(data);
-    // }
-
-    // [] no depencency only runs on first render 
-    useEffect(() => {
-        console.log('useEffect fetching threads ran')
-        setLoading(true)
-        // fetch('http://localhost:3001/a/threads')
-        //fetch('http://140.238.206.232/api/a/threads')
-        fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/threads`)
-            .then((res) => res.json())
-            .then((data) => {
-                setData(data)
-                setLoading(false)
-            })
-            .catch((err) => {
-                console.log(err.message)
-            })
-
-    }, [])
-
-    // call Main scroll position hook
-    useMaintainScroll();
-
-    if (isLoading) return <p>Loading...</p>
-    // console.log(data);
-    if (!data) return <p>Unexpected server error</p>
-    if (!data.length) return <p>Board has no threads</p>
-
-    // console.log('Received:' + data[0].comment);
+function Threads({ data }) {
     const threads = data.map((thread) =>
         <div className='thread' key={thread.post_id}>
             <Post
@@ -126,13 +93,11 @@ function Threads({ data, setData }) {
 
 export default function Board({ boardData }) {
 
-    // hack
-    const [data, setData] = useState(null);
-
+    const { data: threads, isLoading, error } = useFetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/threads`, {});
     const [isHidden, setIsHidden] = useState(true);
+    //     useMaintainScroll();
 
     const onClick = () => setIsHidden(!isHidden);
-
 
     if (typeof window !== 'undefined') {
         if (sessionStorage.scrollPosition) {
@@ -145,12 +110,13 @@ export default function Board({ boardData }) {
         }
     }
 
+    if (isLoading) return <p>Loading...</p>
+    if (error) return <p>Unexpected server error</p>
+    if (!threads) return <p>Board has no threads</p>
+
     return (
         <>
             {/* Nav inside Layout component*/}
-            {/* <Navbar /> */}
-
-            {/* Header */}
             <h1>/{boardData}</h1>
 
             <div id="toggle-post-form-btn">
@@ -163,27 +129,20 @@ export default function Board({ boardData }) {
             {/* <ThreadForm /> */}
 
             <div id="control-bar">
-                {/* <SearchForm /> */}
-                <SearchForm
+                {/* <SearchForm
                     data={data}
                     setData={setData}
-                />
+                /> */}
 
                 <Link href={`/${boardData}/catalog`}>
                     <a>[catalog]</a>
                 </Link>
             </div>
 
-
-
-            {/* <Threads /> */}
             <Threads
-                data={data}
-                setData={setData}
+                data={threads}
+            // setData={setData}
             />
-
-
-            {/* Footer */}
         </>
     )
 }

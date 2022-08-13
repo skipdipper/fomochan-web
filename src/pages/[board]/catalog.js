@@ -1,36 +1,18 @@
 import Card from '../../common/components/Card'
 import { useState, useEffect } from 'react';
-
+import useFetch from '../../common/hooks/useFetch';
 
 
 // hack pass parent state as prop
 function Threads() {
-    const [data, setData] = useState(null)
-
-    const [isLoading, setLoading] = useState(false)
-
-    // [] no depencency only runs on first render 
-    useEffect(() => {
-        console.log('useEffect fetching threads ran')
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/threads`)
-            .then((res) => res.json())
-            .then((data) => {
-                setData(data)
-                setLoading(false)
-            })
-            .catch((err) => {
-                console.log(err.message)
-            })
-
-    }, [])
+    const {data, isLoading, error} = useFetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/threads`, {});
 
     // call Main scroll position hook
     // useMaintainScroll();
 
     if (isLoading) return <p>Loading...</p>
-    if (!data) return <p>Unexpected server error</p>
-    if (!data.length) return <p>Board has no threads</p>
+    if (error) return <p>Unexpected server error</p>
+    if (!data) return <p>Board has no threads</p>
 
     const threads = data.map((thread) =>
         <div className='catalog-item' key={thread.post_id}>
@@ -71,7 +53,6 @@ export default function Catalog({ url }) {
     return (
         <>
             <h1>Catalog</h1>
-            {/* <Card/> */}
             <Threads/>
         </>
     )

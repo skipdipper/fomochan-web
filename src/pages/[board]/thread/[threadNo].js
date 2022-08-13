@@ -18,9 +18,9 @@ function Posts({ form }) {
     const { threadNo } = router.query;
 
     useEffect(() => {
-        console.log('use effect ran');
         if (router.isReady) {
-            setLoading(true)
+            console.log('Fetching Thread');
+            setLoading(true);
             fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/thread/${threadNo}`)
                 .then((res) => res.json())
                 .then((data) => {
