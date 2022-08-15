@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
@@ -9,8 +9,8 @@ import styles from './Post.module.css'
 
 export default function Post(props) {
     const router = useRouter();
-    // const { board } = router.query;
-    const board = 'a';
+    const { board } = router.query;
+    // const board = 'a';
     const threadId = props.thread_id || props.post_id;
 
     function handleReplyPost() {
@@ -18,7 +18,8 @@ export default function Post(props) {
     }
 
     return (
-        <div className={styles.post} id={`p${props.post_id}`}>
+        // <div className={styles.post} id={`p${props.post_id}`}>
+        <div className={props.preview ? "post preview" : "post"} id={`p${props.post_id}`} style={props.style ? props.style : null}>
             <div className={styles.postInfo}>
                 <span className="post-subject">{props.subject}&nbsp;</span>
                 <span className="post-author">{props.name ?? `Anonymous`}&nbsp;</span>
@@ -121,6 +122,10 @@ function Comment(props) {
     const [mouseOverPostId, setMouseOverPostId] = useState(null);
     const [isMouseOver, setIsMouseOver] = useState(false);
 
+    const quotelinkRef = useRef();
+
+
+
     const handleMouseOver = (postId) => {
         setIsMouseOver(true);
         setMouseOverPostId(postId);
@@ -142,7 +147,7 @@ function Comment(props) {
             <blockquote className="post-comment">
                 {
                     parts.map((part, i) => (part.match(regex)
-                        ? <a key={i} className="quotelink" href={`#p${part.slice(2)}`}
+                        ? <a key={i} className="quotelink" href={`#p${part.slice(2)}`} ref={quotelinkRef}
                             onMouseOver={() => handleMouseOver(part.slice(2))}
                             onMouseOut={handleMouseOut}
                         >{part}</a>
@@ -151,18 +156,24 @@ function Comment(props) {
             </blockquote>
 
             {
-                isMouseOver && Post(findPost(mouseOverPostId, thread))
+                isMouseOver && Post(findPost(mouseOverPostId, thread, quotelinkRef))
             }
         </>
     );
 }
 
-function findPost(postId, thread) {
+function findPost(postId, thread, quotelinkRef) {
     for (let post of thread) {
         if (post.post_id == postId) {
             if (post?.thumbnail_h !== undefined) post.thumbnailHeight = post.thumbnail_h;
             if (post?.thumbnail_w !== undefined) post.thumbnailWidth = post.thumbnail_w;
-
+            //Add className preview
+            post.preview = true;
+            //Add inline style
+            const rec = quotelinkRef.current.getBoundingClientRect();
+            console.log(rec);
+            //window.scrollY for position absolute
+            post.style = { top: rec.top + window.scrollY, left: rec.left + 50 };
             console.log(post);
             return post;
         }
