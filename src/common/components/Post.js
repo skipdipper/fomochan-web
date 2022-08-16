@@ -10,12 +10,36 @@ import styles from './Post.module.css'
 export default function Post(props) {
     const router = useRouter();
     const { board } = router.query;
+    const quoteText = useRef(null);
     // const board = 'a';
     const threadId = props.thread_id || props.post_id;
 
-    function handleReplyPost() {
-        console.log(props.form.current.comment.value);
+    function handleReplyPost(e) {
+        //Check MouseUp button event is left button
+        if (e.button != 0) return;
+
+        const { comment } = props.form.current;
+        console.log('current comment', comment.value);
+        comment.focus();
+        comment.value += `>>${props.post_id}\r\n`;
+        if (quoteText.current !== null) {
+            comment.value += `>${quoteText.current}\r\n`;
+            quoteText.current = null;
+        }
+
     }
+
+    function handleSelectedText(e) {
+        //Check MouseUp button event is left button
+        if (e.button != 0) return;
+
+        if (document.getSelection) {
+            const selection = document.getSelection().toString();
+            // alert(selection);
+            quoteText.current = selection;
+        }
+
+    };
 
     return (
         // <div className={styles.post} id={`p${props.post_id}`}>
@@ -31,17 +55,9 @@ export default function Post(props) {
                         <a title="Link to this post">No.</a>
                     </Link>
 
-                    <a title="Reply to this post"
-                        onClick={() => {
-                            console.log('clicked on repply to this post');
-                            const { comment } = props.form.current;
-                            console.log('current comment', comment.value);
-                            comment.focus();
-                            comment.value += `>>${props.post_id}\r\n`;
-
-                        }}
-
-                    >{props.post_id}&nbsp;</a>
+                    <a title="Reply to this post" onMouseDown={handleSelectedText} onMouseUp={handleReplyPost}>
+                        {props.post_id}&nbsp;
+                    </a>
                 </span>
                 <span>
                     <Link href="#">
