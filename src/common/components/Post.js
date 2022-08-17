@@ -9,37 +9,38 @@ import styles from './Post.module.css'
 
 export default function Post(props) {
     const router = useRouter();
+    // const quoteText = useRef(null);
+    const quoteText = { current: null };
+
     const { board } = router.query;
-    const quoteText = useRef(null);
     // const board = 'a';
     const threadId = props.thread_id || props.post_id;
 
     function handleReplyPost(e) {
-        //Check MouseUp button event is left button
+        //Check mouseup button event is left button
         if (e.button != 0) return;
 
         const { comment } = props.form.current;
-        console.log('current comment', comment.value);
         comment.focus();
         comment.value += `>>${props.post_id}\r\n`;
+
         if (quoteText.current !== null) {
-            comment.value += `>${quoteText.current}\r\n`;
+            //Add `>` in front of each new line
+            const multiline = quoteText.current.trim().split(/\r?\n/);
+            comment.value += `>${multiline.join(`\n>`)}\n`;
             quoteText.current = null;
         }
-
     }
 
     function handleSelectedText(e) {
-        //Check MouseUp button event is left button
+        //Check mouseup button event is left button
         if (e.button != 0) return;
 
-        if (document.getSelection) {
+        if (document.getSelection().toString()) {
             const selection = document.getSelection().toString();
-            // alert(selection);
             quoteText.current = selection;
         }
-
-    };
+    }
 
     return (
         // <div className={styles.post} id={`p${props.post_id}`}>
@@ -135,12 +136,11 @@ function BackLink({ replies }) {
 function Comment(props) {
     //Ref: https://github.com/facebook/react/issues/3386#issuecomment-518163501
     const thread = useContext(ThreadContext);
+
     const [mouseOverPostId, setMouseOverPostId] = useState(null);
     const [isMouseOver, setIsMouseOver] = useState(false);
 
     const quotelinkRef = useRef();
-
-
 
     const handleMouseOver = (postId) => {
         setIsMouseOver(true);
