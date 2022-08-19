@@ -12,7 +12,8 @@ export default function PostForm({ form }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        validateForm();
+
+        if (!validateForm()) return;
 
         const formData = new FormData(form.current);
         // The Thread that is being replied to  
@@ -37,10 +38,12 @@ export default function PostForm({ form }) {
 
     function validateForm() {
         const { comment, file } = form.current;
-        if (comment.value == "" || file.length == 0) {
+
+        if (comment.value == "" && file.files.length == 0) {
             alert("Please reply with a comment or attachment");
             return false;
         }
+        return true;
     }
 
     return (
