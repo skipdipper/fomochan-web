@@ -39,38 +39,36 @@ function Posts({ form }) {
     if (!data) return <p>Unexpected server error</p>
     if (!data.length) return <h1>Thread does not Exist</h1>
 
-    const threads = data.map((thread) =>
-        <div className='thread' key={thread.post_id}>
-            <Post
-                subject={thread.subject}
-                name={thread.name}
-                created_at={thread.created_at}
-                post_id={thread.post_id}
-                comment={thread.comment}
-                filesize={thread.filesize}
-                filename={thread.filename}
-                ext={thread.ext}
-                width={thread.width}
-                height={thread.height}
-                thumbnailWidth={thread.thumbnail_w}
-                thumbnailHeight={thread.thumbnail_h}
-                thread_id={thread.thread_id}
-                // replies={thread.replies}
-                reply_to={thread.thread_id == 0 ? thread.last_replies : thread.replies}
+    const thread = data.map((thread) =>
+        <Post key={thread.post_id}
+            subject={thread.subject}
+            name={thread.name}
+            created_at={thread.created_at}
+            post_id={thread.post_id}
+            comment={thread.comment}
+            filesize={thread.filesize}
+            filename={thread.filename}
+            ext={thread.ext}
+            width={thread.width}
+            height={thread.height}
+            thumbnailWidth={thread.thumbnail_w}
+            thumbnailHeight={thread.thumbnail_h}
+            thread_id={thread.thread_id}
+            // replies={thread.replies}
+            reply_to={thread.thread_id == 0 ? thread.last_replies : thread.replies}
 
-                images={thread.images}
-                tim={thread.tim}
+            images={thread.images}
+            tim={thread.tim}
 
-                // prop drilling level 1
-                form={form}
-            />
-        </div>
+            // prop drilling level 1
+            form={form}
+        />
     )
 
     return (
-        <div className='board'>
+        <div className='thread'>
             <ThreadContext.Provider value={data}>
-                {threads}
+                {thread}
             </ThreadContext.Provider>
         </div>
     )

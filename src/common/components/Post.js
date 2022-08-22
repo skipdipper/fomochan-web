@@ -7,6 +7,12 @@ import { ThreadContext } from '../context/ThreadContext';
 
 import styles from './Post.module.css'
 
+import dynamic from 'next/dynamic';
+//Dynamicly load component on client side with no SSR
+const Hovercard = dynamic(() => import('./Hovercard'), {
+    ssr: false,
+})
+
 export default function Post(props) {
     const router = useRouter();
     // const quoteText = useRef(null);
@@ -14,7 +20,7 @@ export default function Post(props) {
 
     const { board } = router.query;
     // const board = 'a';
-    const threadId = props.thread_id || props.post_id;
+    // const threadId = props.thread_id || props.post_id;
 
     function handleReplyPost(e) {
         //Check mouseup button event is left button
@@ -43,20 +49,20 @@ export default function Post(props) {
     }
 
     return (
-        // <div className={styles.post} id={`p${props.post_id}`}>
-        <div className={props.preview ? "post preview" : "post"} id={`p${props.post_id}`} style={props.style ? props.style : null}>
+        <div className={props.preview ? "post preview" : "post"}
+            id={props.preview ? "quote-preview" : `p${props.post_id}`}
+            style={props.style ? props.style : null}>
             <div className={styles.postInfo}>
                 <span className="post-subject">{props.subject}&nbsp;</span>
                 <span className="post-author">{props.name ?? `Anonymous`}&nbsp;</span>
                 <span className="post-date">{createdAt(props.created_at)}&nbsp;</span>
-
-
                 <span className="post-id">
                     <Link href={`#p${props.post_id}`} scroll={false}>
                         <a title="Link to this post">No.</a>
                     </Link>
-
-                    <a title="Reply to this post" onMouseDown={handleSelectedText} onMouseUp={handleReplyPost}>
+                    <a title="Reply to this post"
+                        onMouseDown={handleSelectedText}
+                        onMouseUp={handleReplyPost}>
                         {props.post_id}&nbsp;
                     </a>
                 </span>
@@ -69,17 +75,13 @@ export default function Post(props) {
                 {Boolean(props.reply_to) &&
                     <BackLink replies={props.reply_to} />
                 }
-
             </div>
-
-
 
             {props.filesize &&
                 <Thumbnail {...props} />
             }
 
             <div className={styles.comment}>
-                {/* <p>{props.comment}</p> */}
                 <Comment comment={props.comment} />
             </div>
 
@@ -172,29 +174,36 @@ function Comment(props) {
             </blockquote>
 
             {
-                isMouseOver && Post(findPost(mouseOverPostId, thread, quotelinkRef))
+                isMouseOver &&
+                <Hovercard>
+                    <Post
+                        {...findPost(mouseOverPostId, thread, quotelinkRef)}
+                    />
+                </Hovercard>
             }
         </>
     );
 }
 
+// Find and return post object with matching post id
 function findPost(postId, thread, quotelinkRef) {
-    for (let post of thread) {
-        if (post.post_id == postId) {
-            if (post?.thumbnail_h !== undefined) post.thumbnailHeight = post.thumbnail_h;
-            if (post?.thumbnail_w !== undefined) post.thumbnailWidth = post.thumbnail_w;
-            //Add className preview
-            post.preview = true;
-            //Add inline style
-            const rec = quotelinkRef.current.getBoundingClientRect();
-            console.log(rec);
-            //window.scrollY for position absolute
-            post.style = { top: rec.top + window.scrollY, left: rec.left + 50 };
-            console.log(post);
-            return post;
-        }
-    }
-    return null;
+    const post = thread.find(post => post.post_id == postId);
+    if (post === undefined) return null;
+
+    // Make a copy of the post to avoid mutation
+    const preview = Object.assign({}, post);
+    if (preview?.thumbnail_h !== undefined) preview.thumbnailHeight = preview.thumbnail_h;
+    if (preview?.thumbnail_w !== undefined) preview.thumbnailWidth = preview.thumbnail_w;
+
+    // Set preview flag true
+    preview.preview = true;
+    // Add inline style
+    const rec = quotelinkRef.current.getBoundingClientRect();
+    console.log(rec);
+    // window.scrollY for position absolute
+    preview.style = { top: rec.top + window.scrollY, left: rec.left + 50 };
+
+    return preview;
 }
 
 function Thumbnail(props) {
