@@ -2,16 +2,8 @@ import { useState, useContext, useRef, useEffect } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
-
-import { ThreadContext } from '../context/ThreadContext';
-
 import styles from './Post.module.css'
-
-import dynamic from 'next/dynamic';
-//Dynamicly load component on client side with no SSR
-const Hovercard = dynamic(() => import('./Hovercard'), {
-    ssr: false,
-})
+import QuoteLink from './QuoteLink';
 
 export default function Post(props) {
     const router = useRouter();
@@ -102,12 +94,8 @@ function createdAt(createdAt) {
 }
 
 function BackLink({ replies }) {
-    const backlink = replies.map((link) =>
-        <span className='quotelink' key={link}>
-            <Link href={`#p${link}`} scroll={false}>
-                <a>{`>>${link}`}</a>
-            </Link>
-        </span>
+    const backlink = replies.map((link, i) =>
+        <QuoteLink key={i} content={`>>${link}`} postId={link} />
     )
 
     return (
@@ -117,45 +105,9 @@ function BackLink({ replies }) {
     )
 }
 
-// function Comment({ comment }) {
-//     const regex = /[>]{2}[0-9]+/g;
-//     // const data = comment.replace(regex, `<a href='#'>$&</p>`);
-//     const data = comment.replace(regex, quotelink);
-
-
-//     function quotelink(match, offset, string) {
-//         // return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a><br>`;
-//         return `<a class="quotelink" href=#p${match.slice(2)}>${match}</a>`;
-//     }
-
-//     return (
-//         <>
-//             <blockquote className="post-comment" dangerouslySetInnerHTML={{ __html: data }} />
-//         </>
-//     );
-// }
 
 function Comment(props) {
     //Ref: https://github.com/facebook/react/issues/3386#issuecomment-518163501
-    const thread = useContext(ThreadContext);
-
-    const [mouseOverPostId, setMouseOverPostId] = useState(null);
-    const [isMouseOver, setIsMouseOver] = useState(false);
-
-    const quotelinkRef = useRef();
-
-    const handleMouseOver = (postId) => {
-        setIsMouseOver(true);
-        setMouseOverPostId(postId);
-        console.log('mouse over link No.', postId);
-    };
-
-    const handleMouseOut = () => {
-        setIsMouseOver(false);
-        setMouseOverPostId(null);
-        console.log('mouse out of link');
-    };
-
     //Add brackets ( ) around regex to retain the separator
     const regex = /([>]{2}[0-9]+)/g;
     const parts = props.comment.split(regex);
@@ -165,45 +117,12 @@ function Comment(props) {
             <blockquote className="post-comment">
                 {
                     parts.map((part, i) => (part.match(regex)
-                        ? <a key={i} className="quotelink" href={`#p${part.slice(2)}`} ref={quotelinkRef}
-                            onMouseOver={() => handleMouseOver(part.slice(2))}
-                            onMouseOut={handleMouseOut}
-                        >{part}</a>
+                        ? <QuoteLink key={i} content={part} postId={part.slice(2)} />
                         : part))
                 }
             </blockquote>
-
-            {
-                isMouseOver &&
-                <Hovercard>
-                    <Post
-                        {...findPost(mouseOverPostId, thread, quotelinkRef)}
-                    />
-                </Hovercard>
-            }
         </>
     );
-}
-
-// Find and return post object with matching post id
-function findPost(postId, thread, quotelinkRef) {
-    const post = thread.find(post => post.post_id == postId);
-    if (post === undefined) return null;
-
-    // Make a copy of the post to avoid mutation
-    const preview = Object.assign({}, post);
-    if (preview?.thumbnail_h !== undefined) preview.thumbnailHeight = preview.thumbnail_h;
-    if (preview?.thumbnail_w !== undefined) preview.thumbnailWidth = preview.thumbnail_w;
-
-    // Set preview flag true
-    preview.preview = true;
-    // Add inline style
-    const rec = quotelinkRef.current.getBoundingClientRect();
-    console.log(rec);
-    // window.scrollY for position absolute
-    preview.style = { top: rec.top + window.scrollY, left: rec.left + 50 };
-
-    return preview;
 }
 
 function Thumbnail(props) {
