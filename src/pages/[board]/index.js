@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 import { useRouter } from "next/router"
 
-import Post from '../../common/components/Post'
+import ThreadList from '../../common/components/ThreadList';
 import Catalog from '../../modules/Catalog'
 import ThreadForm from '../../common/components/ThreadForm';
 import SearchForm from '../../common/components/SearchForm';
@@ -56,44 +56,9 @@ export async function getStaticProps({ params }) {
 }
 
 
-function Threads({ data }) {
-    const threads = data.map((thread) =>
-        <div className='thread' key={thread.post_id}>
-            <Post
-                subject={thread.subject}
-                name={thread.name}
-                created_at={thread.created_at}
-                post_id={thread.post_id}
-                comment={thread.comment}
-                filesize={thread.filesize}
-                filename={thread.filename}
-                ext={thread.ext}
-                width={thread.width}
-                height={thread.height}
-                thumbnailWidth={thread.thumbnail_w}
-                thumbnailHeight={thread.thumbnail_h}
-                thread_id={thread.thread_id}
-                replies={thread.replies}
-                images={thread.images}
-                tim={thread.tim}
-                op={true}
-
-            />
-        </div>
-    )
-
-    return (
-        <div className='board'>
-            {threads}
-            {console.log('finished rendering threads')}
-        </div>
-    )
-
-}
-
 export default function Board({ boardData }) {
+    const { data: threads, isLoading, error } = useFetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${boardData}/threads`, {}, [boardData]);
 
-    const { data: threads, isLoading, error } = useFetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/threads`, {});
     const [isHidden, setIsHidden] = useState(true);
     //     useMaintainScroll();
 
@@ -139,10 +104,7 @@ export default function Board({ boardData }) {
                 </Link>
             </div>
 
-            <Threads
-                data={threads}
-            // setData={setData}
-            />
+            <ThreadList data={threads} />
         </>
     )
 }

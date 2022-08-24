@@ -8,7 +8,7 @@ export default function PostForm({ form }) {
     // const form = useRef(null);
 
     const router = useRouter();
-    const { threadNo } = router.query;
+    const { board, threadNo } = router.query;
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -20,7 +20,7 @@ export default function PostForm({ form }) {
         formData.append('thread_id', threadNo);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/post`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/post`, {
                 method: 'POST',
                 body: formData
                 // 'Content-Type': 'multipart/form-data'

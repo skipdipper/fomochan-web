@@ -8,6 +8,7 @@ import Image from 'next/image'
 export default function ThreadForm() {
     const form = useRef(null);
     const router = useRouter();
+    const { board } = router.query;
 
     // capture loaded
     const [captchaId, setCatpchaId] = useState(null);
@@ -39,7 +40,7 @@ export default function ThreadForm() {
         }
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/a/thread`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/thread`, {
                 method: 'POST',
                 body: formData
                 // 'Content-Type': 'multipart/form-data'
@@ -60,7 +61,7 @@ export default function ThreadForm() {
         // e.preventDefault();
 
         try {
-            const response = await fetch("http://140.238.206.232/captcha/v2/captcha", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_CAPTCHA_ENDPOINT}/v2/captcha`, {
                 method: 'POST',
                 body: JSON.stringify({ level: "hard", media: "image/png", "input_type": "text", size: "350x100" })
             });
@@ -87,7 +88,7 @@ export default function ThreadForm() {
     async function submitCaptchaAns(captchaAns) {
 
         try {
-            const response = await fetch("http://140.238.206.232/captcha/v2/answer", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_CAPTCHA_ENDPOINT}/v2/answer`, {
                 method: 'POST',
                 body: JSON.stringify({ id: captchaId, answer: captchaAns })
             });
@@ -148,8 +149,7 @@ export default function ThreadForm() {
                     captchaId &&
                     <div>
                         <Image
-                            // src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/v2/media?id=${captchaId}`}
-                            src={`http://140.238.206.232/captcha/v2/media?id=${captchaId}`}
+                            src={`${process.env.NEXT_PUBLIC_CAPTCHA_ENDPOINT}/v2/media?id=${captchaId}`}
                             width={350}
                             height={100}
                             alt='Captcha image'
