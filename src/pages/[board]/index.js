@@ -1,88 +1,33 @@
 import Link from 'next/link'
+import Error from 'next/error'
 
 import { getAllBoards } from '../../api/services/board'
 import useSWR from 'swr'
-import { useState, useEffect } from 'react';
-
-import { useRouter } from "next/router"
+import { useState } from 'react';
 
 import ThreadList from '../../common/components/ThreadList';
-import Catalog from '../../modules/Catalog'
 import ThreadForm from '../../common/components/ThreadForm';
 import SearchForm from '../../common/components/SearchForm';
 
 import useMaintainScroll from '../../common/hooks/useMaintainScroll';
-import useFetch from '../../common/hooks/useFetch';
-
-export async function getStaticPaths() {
-    // Return a list of possible values for board title
-
-    //paths = await getAllBoards();
-
-    const paths = [
-        {
-            params: {
-                board: 'a'
-            }
-        },
-        {
-            params: {
-                board: 'v'
-            }
-        },
-        {
-            params: {
-                board: 'g'
-            }
-        }
-
-    ]
 
 
-    return {
-        paths,
-        fallback: false
-    }
-}
-
-export async function getStaticProps({ params }) {
-    // Fetch necessary data for the board
-    const boardData = params.board;
-    return {
-        props: {
-            boardData
-        }
-    }
-}
-
-
-export default function Board({ boardData }) {
-    const { data: threads, isLoading, error } = useFetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${boardData}/threads`, {}, [boardData]);
+export default function Board({ errorCode, data: threads, board }) {
 
     const [isHidden, setIsHidden] = useState(true);
     //     useMaintainScroll();
 
-    const onClick = () => setIsHidden(!isHidden);
+    const onClick = () => setIsHidden(hidden => !hidden);
 
-    if (typeof window !== 'undefined') {
-        if (sessionStorage.scrollPosition) {
-            console.log(`restoring previous scroll position: ${sessionStorage.scrollPosition} scrolling...`);
-            window.scrollTo({
-                top: sessionStorage.scrollPosition,
-                left: 0,
-                behavior: 'auto'
-            });
-        }
+    if (errorCode) {
+        return <Error statusCode={errorCode} />
     }
 
-    if (isLoading) return <p>Loading...</p>
-    if (error) return <p>Unexpected server error</p>
-    if (!threads) return <p>Board has no threads</p>
+    if (!threads.length) return <div>Board has no threads</div>
 
     return (
         <>
-            {/* Nav inside Layout component*/}
-            <h1>/{boardData}</h1>
+            <h1 id="board-title">/{board}</h1>
 
             <div id="toggle-post-form-btn">
                 <button onClick={onClick}>Start a New Thread</button>
@@ -99,7 +44,7 @@ export default function Board({ boardData }) {
                     setData={setData}
                 /> */}
 
-                <Link href={`/${boardData}/catalog`}>
+                <Link href={`/${board}/catalog`}>
                     <a>[catalog]</a>
                 </Link>
             </div>
@@ -109,3 +54,22 @@ export default function Board({ boardData }) {
     )
 }
 
+
+export async function getServerSideProps(context) {
+    const { board } = context.params;
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/threads`);
+    const errorCode = res.ok ? false : res.status
+    const data = await res.json();
+
+    console.log(`getServerSideProps for Board /${board}`);
+    if (!data) {
+        return {
+            notFound: true,
+        }
+    }
+
+    return {
+        props: { errorCode, data, board },
+    }
+}

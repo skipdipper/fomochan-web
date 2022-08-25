@@ -8,6 +8,15 @@ import QuoteLink from './QuoteLink';
 export default function Post(props) {
     const router = useRouter();
     // const quoteText = useRef(null);
+
+    // Update to local time format from server Unix time stamp
+    // TODO: Use UTC time on initial render instead of Unix time
+    // to fix visible layout change caused by setState on mount
+    const [localTime, setLocalTime] = useState(props.created_at);
+    useEffect(() => {
+        setLocalTime(createdAt(props.created_at));
+    }, [])
+
     const quoteText = { current: null };
 
     const { board } = router.query;
@@ -47,7 +56,12 @@ export default function Post(props) {
             <div className={styles.postInfo}>
                 <span className="post-subject">{props.subject}&nbsp;</span>
                 <span className="post-author">{props.name ?? `Anonymous`}&nbsp;</span>
-                <span className="post-date">{createdAt(props.created_at)}&nbsp;</span>
+                {/* SSR Server and Client datetime mismatch on hygradation*/}
+                {/* <span className="post-date">{createdAt(props.created_at)}&nbsp;</span> */}
+
+                {/* <span className="post-date">{props.created_at}&nbsp;</span> */}
+                <span className="post-date">{localTime}&nbsp;</span>
+
                 <span className="post-id">
                     <Link href={`#p${props.post_id}`} scroll={false}>
                         <a title="Link to this post">No.</a>
