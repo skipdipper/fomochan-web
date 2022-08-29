@@ -2,37 +2,21 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Post from './Post'
 import { ThreadContext } from '../context/ThreadContext';
+import useThread from '../hooks/useThread';
 
 /**
  * Single Original Post and all the reply posts
  */
-export default function PostList({ form }) {
-    const [data, setData] = useState(null);
-    const [isLoading, setLoading] = useState(false);
-
+export default function PostList({ form, autoUpdate }) {
     const router = useRouter();
     const { board, threadNo } = router.query;
 
-    useEffect(() => {
-        if (router.isReady) {
-            console.log('Fetching Thread');
-            setLoading(true);
-            fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/thread/${threadNo}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    setData(data)
-                    setLoading(false)
-                })
-                .catch((err) => {
-                    console.log(err.message)
-                })
-        }
-
-    }, [router.isReady]);
+    const { data, isLoading, isError } = useThread(false, {
+        refreshInterval: autoUpdate ? 11000 : 0
+    });
 
     if (isLoading) return <p>Loading...</p>
-    // console.log(data);
-    if (!data) return <p>Unexpected server error</p>
+    if (isError) return <p>Unexpected server error</p>
     if (!data.length) return <h1>Thread does not Exist</h1>
 
     const thread = data.map((thread) =>
@@ -66,5 +50,4 @@ export default function PostList({ form }) {
             </ThreadContext.Provider>
         </div>
     )
-
 }

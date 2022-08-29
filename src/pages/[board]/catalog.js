@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/threads`);
     const errorCode = res.ok ? false : res.status
     const data = await res.json();
-    console.log(data);
+
     console.log(`getServerSideProps for Catalog Board /${board}`);
     if (!data) {
         return {

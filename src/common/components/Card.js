@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
-
+import { useRouter } from 'next/router';
 
 
 export default function Card(props) {
-    const board = 'a';
+    const router = useRouter();
+    const { board } = router.query;
 
     return (
         <div className="post-card">
