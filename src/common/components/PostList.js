@@ -12,7 +12,8 @@ export default function PostList({ form, autoUpdate }) {
     const { board, threadNo } = router.query;
 
     const { data, isLoading, isError } = useThread(false, {
-        refreshInterval: autoUpdate ? 11000 : 0
+        refreshInterval: autoUpdate ? 11000 : 0,
+        // revalidateOnMount: false
     });
 
     if (isLoading) return <p>Loading...</p>

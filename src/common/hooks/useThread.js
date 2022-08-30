@@ -32,6 +32,7 @@ export default function useThread(ssr = false, options = {}) {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
+        // dedupingInterval: 5000,
         ...options
     });
 
