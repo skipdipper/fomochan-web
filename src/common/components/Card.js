@@ -15,8 +15,8 @@ export default function Card(props) {
                     <a>
                         <Image
                             src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
-                            width={125}
-                            height={95}
+                            width={props.thumbnailWidth ?? 250}
+                            height={props.thumbnailHeight ?? 250}
                             alt={props.filename}
                         />
                     </a>
@@ -25,7 +25,10 @@ export default function Card(props) {
 
             <div className="post-details">
                 <div className="post-meta" title="(R)eplies / (I)mage Replies">
-                    R: <span className="reply-count">{props.replies}</span> / I: <span className="image-count">{props.images}</span>
+                    {`R: `}
+                    <span className="reply-count">{props.replies}</span>
+                    {` / I: `}
+                    <span className="image-count">{props.images}</span>
                 </div>
                 <div className="post-subject">{props.subject}</div>
                 <div className="post-preview">{props.comment}</div>
