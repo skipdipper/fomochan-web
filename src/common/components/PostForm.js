@@ -1,12 +1,14 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from 'next/router';
+import useSWR, { useSWRConfig } from 'swr'
 
 import Dropzone from "./Dropzone";
 
 // multipart/form-data
 export default function PostForm({ form }) {
     // const form = useRef(null);
-
+    const { mutate } = useSWRConfig();
+    const [showNotification, setShowNotification] = useState(false);
     const router = useRouter();
     const { board, threadNo } = router.query;
 
@@ -26,8 +28,15 @@ export default function PostForm({ form }) {
                 // 'Content-Type': 'multipart/form-data'
             });
 
-            // reload page
-            //router.reload(window.location.pathname)
+            // post successfully created
+            if (response.ok) {
+                // revalidate
+                // TODO: optimistically update
+                mutate(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${board}/thread/${threadNo}`);
+                // clear the form
+                form.current.reset();
+                setShowNotification(true);
+            }
 
             console.log(response);
         } catch (error) {
@@ -44,6 +53,10 @@ export default function PostForm({ form }) {
             return false;
         }
         return true;
+    }
+
+    function dismissNotification() {
+        setShowNotification(false);
     }
 
     return (
@@ -74,6 +87,31 @@ export default function PostForm({ form }) {
             />
 
             <input type="submit" value={`post`} />
+
+            {showNotification &&
+                <Notification
+                    message={`Post Created`}
+                    duration={3000}
+                    dismissNotification={dismissNotification}
+                />
+            }
         </form>
+    )
+}
+
+
+function Notification({ message, duration, dismissNotification }) {
+    const [expired, setExpired] = useState(false);
+
+    useEffect(() => {
+        if (expired) {
+            dismissNotification();
+        } else {
+            setTimeout(() => setExpired(true), duration);
+        }
+    }, [expired]);
+
+    return (
+        <div className="notification">{message}</div>
     )
 }

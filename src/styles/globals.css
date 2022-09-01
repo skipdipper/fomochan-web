@@ -10,8 +10,6 @@ body {
   /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
 
-  
-
   /* background-color: #3A3B3C;
   color: white; */
 }
@@ -197,10 +195,14 @@ form:not(#search-form) {
     text-decoration: none;
     border: 1px solid #eaeaea;
     /* border: 1px solid black; */
-    border-radius: 10px;
+    /* border-radius: 10px; */
     transition: color 0.15s ease, border-color 0.15s ease;
     /* max-width: 70%; */
     max-width: max-content; 
+}
+
+.post-id a {
+  cursor: pointer;
 }
 
 .preview {
@@ -209,4 +211,17 @@ form:not(#search-form) {
   /* position: relative; */
   transform: translateY(-50%);
   z-index: 9999;
+}
+
+/* Notification Component */
+.notification {
+    color: white;
+    background-color: #282828;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 9999;
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
 }
