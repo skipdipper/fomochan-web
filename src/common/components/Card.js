@@ -1,25 +1,42 @@
+import { useContext } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 
+import { CatalogContext } from '../context/CatalogContext';
 
 export default function Card(props) {
+    const catalog = useContext(CatalogContext);
     const router = useRouter();
     const { board } = router.query;
+
+    const { height, width } = getDimensions(props.thumbnailHeight, props.thumbnailWidth);
 
     return (
         <div className="post-card">
 
             <div className="post-image">
                 <Link href={`/${board}/thread/${props.post_id}`}>
-                    <a>
-                        <Image
-                            src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
-                            width={props.thumbnailWidth ?? 250}
-                            height={props.thumbnailHeight ?? 250}
-                            alt={props.filename}
-                        />
-                    </a>
+                    {
+                        catalog == 'small' ?
+                            <a>
+                                <Image
+                                    src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
+                                    width={width}
+                                    height={height}
+                                    alt={props.filename}
+                                />
+                            </a>
+
+                            :<a>
+                                <Image
+                                    src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
+                                    width={props.thumbnailWidth ?? 250}
+                                    height={props.thumbnailHeight ?? 250}
+                                    alt={props.filename}
+                                />
+                            </a>
+                    }
                 </Link>
             </div>
 
@@ -36,4 +53,18 @@ export default function Card(props) {
 
         </div>
     )
+}
+
+function getDimensions(height, width) {
+    const maxLength = 150;
+
+    if (height == null || width == null) {
+        return { height: maxLength, width: maxLength };
+    }
+
+    if (height > width) {
+        return { height: 150, width: width * (maxLength / height) };
+    }
+
+    return { height: height * (maxLength / width), width: maxLength };
 }
