@@ -1,14 +1,13 @@
 import Error from 'next/error'
-import { useState, UserContext } from 'react';
+import { useState } from 'react';
 
-import useFetch from '../../common/hooks/useFetch';
-import Card from '../../common/components/Card'
 import ThreadList from '../../common/components/ThreadList';
-import { CatalogContext } from '../../common/context/CatalogContext';
+import CatalogSettings from '../../common/components/CatalogSettings';
+import { CatalogProvider } from '../../common/context/CatalogContext';
 
 
 export default function Catalog({ errorCode, data: threads, board }) {
-    const [imageSize, setImageSize] = useState('small');
+    console.log('Rendering Catalog Page');
 
     if (errorCode) {
         return <Error statusCode={errorCode} />
@@ -18,21 +17,10 @@ export default function Catalog({ errorCode, data: threads, board }) {
         <>
             <h1>Catalog</h1>
 
-            <label htmlFor="image-size-select">Image Size:</label>
-            <select
-                name="image-size-select"
-                id="image-size-select"
-                defaultValue={imageSize}
-                onChange={() => setImageSize(event.target.value)}
-            >
-                <option value="small" >Small</option>
-                <option value="large">Large</option>
-            </select>
-
-            <CatalogContext.Provider value={imageSize}>
+            <CatalogProvider>
+                <CatalogSettings />
                 <ThreadList data={threads} catalog={true} />
-            </CatalogContext.Provider>
-
+            </CatalogProvider>
         </>
     )
 }

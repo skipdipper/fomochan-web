@@ -1,12 +1,12 @@
-import { useContext } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 
-import { CatalogContext } from '../context/CatalogContext';
+import { useCatalog } from '../context/CatalogContext';
 
 export default function Card(props) {
-    const catalog = useContext(CatalogContext);
+    const { imageSize, showOpComment } = useCatalog();
+
     const router = useRouter();
     const { board } = router.query;
 
@@ -18,7 +18,7 @@ export default function Card(props) {
             <div className="post-image">
                 <Link href={`/${board}/thread/${props.post_id}`}>
                     {
-                        catalog == 'small' ?
+                        imageSize == 'small' ?
                             <a>
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
@@ -28,7 +28,7 @@ export default function Card(props) {
                                 />
                             </a>
 
-                            :<a>
+                            : <a>
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}s.jpg`}
                                     width={props.thumbnailWidth ?? 250}
@@ -47,8 +47,13 @@ export default function Card(props) {
                     {` / I: `}
                     <span className="image-count">{props.images}</span>
                 </div>
-                <div className="post-subject">{props.subject}</div>
-                <div className="post-preview">{props.comment}</div>
+
+                {
+                    showOpComment && <>
+                        <div className="post-subject">{props.subject}</div>
+                        <div className="post-preview">{props.comment}</div>
+                    </>
+                }
             </div>
 
         </div>
