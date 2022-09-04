@@ -2,6 +2,7 @@ import Error from 'next/error'
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { SWRConfig } from 'swr'
 
 import PostList from '../../../common/components/PostList';
@@ -9,13 +10,11 @@ import PostForm from '../../../common/components/PostForm';
 import Dropzone from '../../../common/components/Dropzone';
 import BookmarkAddBtn from '../../../common/components/BookmarkAddBtn';
 import ThreadDeleteBtn from '../../../common/components/ThreadDeleteBtn';
-import ThreadUpdateBtn from '../../../common/components/ThreadUpdateBtn';
-import ThreadAutoFetchCheckbox from '../../../common/components/ThreadAutoFetchCheckbox';
+import ThreadControls from '../../../common/components/ThreadControls';
 import ThreadStats from '../../../common/components/ThreadStats';
-import Countdown from '../../../common/components/Countdown';
 
 
-export default function Thread({ fallbackData, errorCode }) {
+export default function ThreadPage({ fallbackData, errorCode }) {
     const [autoUpdate, setAutoUpdate] = useState(false);
     const router = useRouter();
 
@@ -40,7 +39,10 @@ export default function Thread({ fallbackData, errorCode }) {
 
     return (
         <>
-            <h1>Thread No. {threadNo} on board {board}</h1>
+            <Head>
+                <title>{`/${board}/ - ${fallbackData[0].subject}`}</title>
+            </Head>
+
             <PostForm
                 form={form}
             />
@@ -58,11 +60,7 @@ export default function Thread({ fallbackData, errorCode }) {
                 </div>
             }
 
-            <div className='thread-controls'>
-                <ThreadUpdateBtn />
-                <ThreadAutoFetchCheckbox handleAutoUpdate={handleAutoUpdate} />
-                {autoUpdate && <Countdown />}
-            </div>
+            <ThreadControls autoUpdate={autoUpdate} handleAutoUpdate={handleAutoUpdate} />
 
             <SWRConfig value={{ fallbackData }}>
                 <ThreadStats />
@@ -71,6 +69,8 @@ export default function Thread({ fallbackData, errorCode }) {
                     autoUpdate={autoUpdate}
                 />
             </SWRConfig>
+
+            <div id='bottom'></div>
         </>
     )
 }
