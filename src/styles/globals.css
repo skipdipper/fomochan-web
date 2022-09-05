@@ -33,7 +33,7 @@ nav a {
   margin-right: 0.5em;
 }
 
-#toggle-post-form-btn {
+#board-title, #toggle-post-form-btn {
   text-align: center;
 }
 
@@ -65,16 +65,6 @@ nav a {
 
 
 
-.post-subject {
-  font-weight: 700;
-  color: blue;
-}
-
-/* Post*/
-.post-author {
-  font-weight: 700;
-  color: green;
-}
 
 
 
@@ -183,7 +173,7 @@ form:not(#search-form) {
   background-color: lightgray;
 }
 
-
+/* Post container */
 .post {
     /* float image inside div hack */
     overflow: hidden;
@@ -201,10 +191,41 @@ form:not(#search-form) {
     max-width: max-content; 
 }
 
+.post-info {
+    display: flex;
+    /* white-space: pre-wrap; */
+}
+
+.post-subject {
+  font-weight: 700;
+  color: blue;
+}
+
+/* Post Container */
+.post-author {
+  font-weight: 700;
+  color: green;
+}
+
+.thumbnail {
+    float: left;
+    margin: 3px 20px 20px 5px
+}
+
+.image-info {
+    display: flex;
+}
+
+.comment {
+    /* multiline comment */
+    white-space: pre-wrap; 
+}
+
 .post-id a {
   cursor: pointer;
 }
 
+/* Post on hover */
 .preview {
   background-color: white;
   position: absolute;

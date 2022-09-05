@@ -53,7 +53,7 @@ export default function Post(props) {
         <div className={props.preview ? "post preview" : "post"}
             id={props.preview ? "quote-preview" : `p${props.post_id}`}
             style={props.style ? props.style : null}>
-            <div className={styles.postInfo}>
+            <div className={"post-info"}>
                 <span className="post-subject">{props.subject}&nbsp;</span>
                 <span className="post-author">{props.name ?? `Anonymous`}&nbsp;</span>
                 {/* SSR Server and Client datetime mismatch on hygradation*/}
@@ -87,7 +87,7 @@ export default function Post(props) {
                 <Thumbnail {...props} />
             }
 
-            <div className={styles.comment}>
+            <div className={"comment"}>
                 <Comment comment={props.comment} />
             </div>
 
@@ -148,8 +148,8 @@ function Thumbnail(props) {
     }
 
     return (
-        <div className={styles.image}>
-            <div className={styles.imageInfo}>
+        <div className={"thumbnail-container"}>
+            <div className={"image-info"}>
                 <span>
                     File:
                     <Link href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}>
@@ -160,7 +160,7 @@ function Thumbnail(props) {
             </div>
 
             <Link href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}>
-                <a className={styles.thumbnail} onClick={handleImageClick}>
+                <a className={"thumbnail"} onClick={handleImageClick}>
                     {
                         thumbnail
                             ? <Image
