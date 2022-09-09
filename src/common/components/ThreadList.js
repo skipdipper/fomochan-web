@@ -14,6 +14,7 @@ export default function ThreadList({ data, catalog = false }) {
                     comment={thread.comment}
                     filesize={thread.filesize}
                     filename={thread.filename}
+                    ext={thread.ext}
                     width={thread.width}
                     height={thread.height}
                     thumbnailWidth={thread.thumbnail_w}

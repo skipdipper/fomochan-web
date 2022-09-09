@@ -2,8 +2,8 @@ import { useState, useContext, useRef, useEffect } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
-import styles from './Post.module.css'
 import QuoteLink from './QuoteLink';
+import { formatBytes } from '../../utils/formatBytes';
 
 export default function Post(props) {
     const router = useRouter();
@@ -153,9 +153,9 @@ function Thumbnail(props) {
                 <span>
                     File:
                     <Link href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/img/${props.tim}${props.ext}`}>
-                        <a target="_blank"> {props.filename} </a>
+                        <a target="_blank"> {props.filename}{props.ext} </a>
                     </Link>
-                    ({props.width}x{props.height})
+                    ({formatBytes(props.filesize, 0)}, {props.width}x{props.height})
                 </span>
             </div>
 
